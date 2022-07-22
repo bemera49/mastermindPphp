@@ -1,0 +1,17 @@
+{
+    "[php]":{
+        "editor.tabSize": 2
+    },
+    "[html]":{
+        "editor.tabSize": 2
+    },
+    "[javascript]":{
+        "editor.tabSize": 2
+    },
+    "files.insertFinalNewline": true,
+    //configuraciones para las vistas del windwos
+    // "editor.fontSize": 24,
+    // "editor.lineHeight": 26,
+    // "window.zoomLevel": 2
+
+}
