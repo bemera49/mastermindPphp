@@ -1,25 +1,19 @@
 <pre>
 <?php
+
+require_once "db.php";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $contact = [
-    "name" => $_POST["name"],
-    "phone_number" => $_POST["phone_number"],
-  ];
-
-  if (file_exists("contacts.json")) {
-    $contacts = json_decode(file_get_contents("contacts.json"), true);
-  } else {
-    $contacts = [];
-  }
-
-  $contacts[] = $contact;
-  file_put_contents("contacts.json", json_encode($contacts));
-  header("Location: index.php");
+    $name = $_POST["name"];
+    $phoneNumber = $_POST["phone_number"];
+    
+    $sql = $conn->prepare("INSERT INTO contacts VALUES (null, '$name', '$phoneNumber')");
+    $sql->execute();
+   header("Location: index.php");
 }
 ?>
 </pre>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
   <meta charset="UTF-8">
@@ -52,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="./index.html">Home</a>
+            <a class="nav-link" href="./index.php">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/contacts-app/add.html">Add Contact</a>

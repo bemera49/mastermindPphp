@@ -1,13 +1,12 @@
 <?php
-if (file_exists("contacts.json")) {
-  $contacts = json_decode(file_get_contents("contacts.json"), true);
-} else {
-  $contacts = [];
-}
+require_once "db.php";
+
+$contacts = $conn->query("SELECT * FROM contacts");
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -27,8 +26,7 @@ if (file_exists("contacts.json")) {
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <!--Esto es para dar margen -->
+    <div class="container-fluid"> <!--dar margen -->
       <a class="navbar-brand font-weight-bold" href="#">
         <img class="mr-2" src="static/img/logo.png" />
         ContactsApp
@@ -52,6 +50,15 @@ if (file_exists("contacts.json")) {
   <main>
     <div class="container pt-4 pt-3">
       <div class="row">
+
+        <?php if ($contacts->rowCount() == 0) : ?> <!--rowCount recorre lo que trae de la consulta -->
+          <div class="col-md-4 mx-auto">
+            <div class="card card-body text-center">
+              <p>No contacts saved yet</p>
+              <a href="add.php">Add One!</a>
+            </div>
+          </div>
+        <?php endif ?>
         <?php foreach ($contacts as $contact) : ?>
           <div class="col-md-4 mb-3">
             <div class="card text-center">
