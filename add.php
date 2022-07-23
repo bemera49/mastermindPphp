@@ -1,3 +1,23 @@
+<pre>
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  $contact = [
+    "name" => $_POST["name"],
+    "phone_number" => $_POST["phone_number"],
+  ];
+
+  if (file_exists("contacts.json")) {
+    $contacts = json_decode(file_get_contents("contacts.json"), true);
+  } else {
+    $contacts = [];
+  }
+
+  $contacts[] = $contact;
+  file_put_contents("contacts.json", json_encode($contacts));
+  header("Location: index.php");
+}
+?>
+</pre>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,13 +27,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- bootstrap -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/darkly/bootstrap.min.css"
-    integrity="sha512-ZdxIsDOtKj2Xmr/av3D/uo1g15yxNFjkhrcfLooZV5fW0TT7aF7Z3wY1LOA16h0VgFLwteg14lWqlYUQK3to/w=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/darkly/bootstrap.min.css" integrity="sha512-ZdxIsDOtKj2Xmr/av3D/uo1g15yxNFjkhrcfLooZV5fW0TT7aF7Z3wY1LOA16h0VgFLwteg14lWqlYUQK3to/w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
-    </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
+  </script>
 
   <!-- static content -->
   <link rel="stylesheet" href="static/css/style.css">
@@ -29,8 +46,7 @@
         <img class="mr-2" src="static/img/logo.png" />
         ContactsApp
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -53,13 +69,12 @@
           <div class="card">
             <div class="card-header">Add New Contact</div>
             <div class="card-body">
-              <form>
+              <form method="POST" action="add.php">
                 <div class="mb-3 row">
                   <label for="name" class="col-md-4 col-form-label text-md-end">Name</label>
 
                   <div class="col-md-6">
-                    <input id="name" type="text" class="form-control" name="name" required autocomplete="name"
-                      autofocus>
+                    <input id="name" type="text" class="form-control" name="name" required autocomplete="name" autofocus>
                   </div>
                 </div>
 
@@ -67,8 +82,7 @@
                   <label for="phone_number" class="col-md-4 col-form-label text-md-end">Phone Number</label>
 
                   <div class="col-md-6">
-                    <input id="phone_number" type="tel" class="form-control" name="phone_number" required
-                      autocomplete="phone_number" autofocus>
+                    <input id="phone_number" type="tel" class="form-control" name="phone_number" required autocomplete="phone_number" autofocus>
                   </div>
                 </div>
 

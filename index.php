@@ -1,14 +1,13 @@
 <?php
-$contacts = [
-  ["name" => "pepe", "phone_number" => "123434"],
-  ["name" => "pipe", "phone_number" => "3117190463"],
-  ["name" => "tatiana", "phone_number" => "3124848309"],
-];
+if (file_exists("contacts.json")) {
+  $contacts = json_decode(file_get_contents("contacts.json"), true);
+} else {
+  $contacts = [];
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -40,10 +39,10 @@ $contacts = [
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="/contacts-app/">Home</a>
+            <a class="nav-link" href="index.php">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="add.html">Add Contact</a>
+            <a class="nav-link" href="add.php">Add Contact</a>
           </li>
         </ul>
       </div>
