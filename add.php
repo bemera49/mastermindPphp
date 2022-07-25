@@ -12,12 +12,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   } else {
     $name = $_POST["name"];
     $phoneNumber = $_POST["phone_number"];
-
-    $sql = $conn->prepare("INSERT INTO contacts VALUES (null, ':name', ':phone_number')");
-    $sql->bindParam(":name", $_POST["name"]);
-    $sql->bindParam(":phone_number", $_POST["phone_number"]);    
+    $sql = $conn->prepare("INSERT INTO contacts VALUES (null, :name, :phone_number)");
+    $sql->bindParam(":name", $name);
+    $sql->bindParam(":phone_number", $phoneNumber);    
     $sql->execute();
-    
+
     header("Location: index.php");
   }
 }
@@ -60,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <a class="nav-link" href="./index.php">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/contacts-app/add.html">Add Contact</a>
+            <a class="nav-link" href="/contacts-app/add.php">Add Contact</a>
           </li>
         </ul>
       </div>
