@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql->bindParam(":phone_number", $phoneNumber);    
     $sql->execute();
 
-    header("Location: index.php");
+    header("Location: home.php");
   }
 }
 ?>
@@ -56,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="./index.php">Home</a>
+            <a class="nav-link" href="./home.php">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/contacts-app/add.php">Add Contact</a>

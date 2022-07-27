@@ -15,11 +15,17 @@
   <!-- static content -->
   <link rel="stylesheet" href="static/css/style.css">
 
+  <?php $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH) ?>
+  <?php if ($uri == "/contacts-app/" || $uri == "/contacts-app/index.php") : ?>
+    <script defer src="../static/js/welcome.js"></script>
+  <?php endif ?>
+
   <title>Contats App</title>
 </head>
-  <?php require "navbar.php"; ?>
+<?php require "navbar.php"; ?>
+
 <body>
 
   <main>
 
-  <!-- Contenido principal -->
+    <!-- Contenido principal -->
