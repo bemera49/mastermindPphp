@@ -2,26 +2,33 @@
 <?php
 require_once "db.php";
 
-if(!isset($_SESSION["user"])){
-  header("Location: login.php");
-  return;
-
 $error = null;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  if (empty($_POST["name"]) || empty($_POST["phone_number"])) {
-    $error = "Please fill all the fields.";
-  } else if (strlen($_POST["phone_number"]) <= 10) {
-    $error = "Phone number must be at least 10 characters.";
+  if (empty($_POST["email"]) || empty($_POST["password"])) {
+    $error = "Los campos no pueden estar vacios";
+  } else if (!str_contains($_POST["email"], "@")) {
+    $error = "El correo es incorrecto";
   } else {
-    $name = $_POST["name"];
-    $phoneNumber = $_POST["phone_number"];
-    $sql = $conn->prepare("INSERT INTO contacts VALUES (null, :name, :phone_number)");
-    $sql->bindParam(":name", $name);
-    $sql->bindParam(":phone_number", $phoneNumber);    
+    $sql = $conn->prepare("SELECT * FROM users WHERE email = :email LIMIT 1");
+    $sql->bindParam(":email", $_POST["email"]);
     $sql->execute();
 
-    header("Location: home.php");
+    if ($sql->rowCount() == 0) {
+      $error = "Invalid credentials.";
+    } else {
+      $user = $sql->fetch(PDO::FETCH_ASSOC);
+      if (!password_verify($_POST["password"], $user["password"])) {
+        $error = "invalid credentials.";
+      } else {
+        session_start();
+
+        unset($user["password"]);
+        
+        $_SESSION["user"] = $user;
+        header("Location: home.php");
+      }
+    }
   }
 }
 ?>
@@ -75,35 +82,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <div class="row justify-content-center">
         <div class="col-md-8">
           <div class="card">
-            <div class="card-header">Add New Contact</div>
+            <div class="card-header">Login</div>
             <div class="card-body">
-              <?php if($error) :?>
+              <?php if ($error) : ?>
                 <p class="text-danger">
                   <?= $error ?>
                 </p>
               <?php endif ?>
-              <form method="POST" action="add.php">
+              <form method="POST" action="login.php">
                 <div class="mb-3 row">
-                  <label for="name" class="col-md-4 col-form-label text-md-end">Name</label>
 
-                  <div class="col-md-6">
-                    <input id="name" type="text" class="form-control" name="name" required autocomplete="name" autofocus>
+                  <div class="mb-3 row">
+                    <label for="email" class="col-md-4 col-form-label text-md-end">Email:</label>
+
+                    <div class="col-md-6">
+                      <input id="email" type="tel" class="form-control" name="email" required autocomplete="email" autofocus>
+                    </div>
                   </div>
-                </div>
 
-                <div class="mb-3 row">
-                  <label for="phone_number" class="col-md-4 col-form-label text-md-end">Phone Number</label>
+                  <div class="mb-3 row">
+                    <label for="password" class="col-md-4 col-form-label text-md-end">Password:</label>
 
-                  <div class="col-md-6">
-                    <input id="phone_number" type="tel" class="form-control" name="phone_number" required autocomplete="phone_number" autofocus>
+                    <div class="col-md-6">
+                      <input id="password" type="tel" class="form-control" name="password" required autocomplete="password" autofocus>
+                    </div>
                   </div>
-                </div>
 
-                <div class="mb-3 row">
-                  <div class="col-md-6 offset-md-4">
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                  <div class="mb-3 row">
+                    <div class="col-md-6 offset-md-4">
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
                   </div>
-                </div>
               </form>
             </div>
           </div>

@@ -14,20 +14,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql->bindParam(":email", $_POST["email"]);
     $sql->execute();
 
-    if($sql->rowCount() > 0){
+    if ($sql->rowCount() > 0) {
       $error = "this email is taken.";
-    }else{
+    } else {
       $conn
         ->prepare("INSERT INTO users VALUES(null, :name, :email, :password)")
         ->execute([
           ":name" => $_POST["name"],
           ":email" => $_POST["email"],
-          ":password" => password_hash($_POST["password"], PASSWORD_BCRYPT),          
+          ":password" => password_hash($_POST["password"], PASSWORD_BCRYPT),
         ]);
-        
-        header("Location: home.php");
-    }
 
+      $sql = $conn->prepare("SELECT * FROM users WHERE email = :email LIMIT 1");
+      $sql->bindParam(":email", $_POST["email"]);
+      $sql->execute();
+      $user = $sql->fetch(PDO::FETCH_ASSOC);
+      
+      header("Location: home.php");
+    }
   }
 }
 ?>
