@@ -8,7 +8,8 @@ if(!isset($_SESSION["user"])){
   return;
 }
 
-$contacts = $conn->query("SELECT * FROM contacts");
+$user_id = $_SESSION["user"]["id"];
+$contacts = $conn->query("SELECT * FROM contacts WHERE user_id = $user_id");
 ?>
 
 <?php require "partial/header.php" ?>

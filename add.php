@@ -2,28 +2,33 @@
 <?php
 require_once "db.php";
 
-if(!isset($_SESSION["user"])){
+session_start();
+
+if (!isset($_SESSION["user"])) {
   header("Location: login.php");
   return;
-
-$error = null;
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  if (empty($_POST["name"]) || empty($_POST["phone_number"])) {
-    $error = "Please fill all the fields.";
-  } else if (strlen($_POST["phone_number"]) <= 10) {
-    $error = "Phone number must be at least 10 characters.";
-  } else {
-    $name = $_POST["name"];
-    $phoneNumber = $_POST["phone_number"];
-    $sql = $conn->prepare("INSERT INTO contacts VALUES (null, :name, :phone_number)");
-    $sql->bindParam(":name", $name);
-    $sql->bindParam(":phone_number", $phoneNumber);    
-    $sql->execute();
-
-    header("Location: home.php");
-  }
 }
+  $error = null;
+
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (empty($_POST["name"]) || empty($_POST["phone_number"])) {
+      $error = "Please fill all the fields.";
+    } else if (strlen($_POST["phone_number"]) <= 10) {
+      $error = "Phone number must be at least 10 characters.";
+    } else {
+      $name = $_POST["name"];
+      $phoneNumber = $_POST["phone_number"];
+      $user_id = $_SESSION["user"]["id"];
+      $sql = $conn->prepare("INSERT INTO contacts VALUES (null, :user_id, :name, :phone_number)");
+      $sql->bindParam(":user_id", $user_id);
+      $sql->bindParam(":name", $name);
+      $sql->bindParam(":phone_number", $phoneNumber);
+      $sql->execute();
+
+      header("Location: home.php");
+    }
+  }
+
 ?>
 </pre>
 <!DOCTYPE html>
@@ -77,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <div class="card">
             <div class="card-header">Add New Contact</div>
             <div class="card-body">
-              <?php if($error) :?>
+              <?php if ($error) : ?>
                 <p class="text-danger">
                   <?= $error ?>
                 </p>
