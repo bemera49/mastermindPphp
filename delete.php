@@ -8,7 +8,7 @@ if(!isset($_SESSION["user"])){
 }
 $id = $_GET['id'];
 
-$sql = $conn->prepare("SELECT * FROM contacts WHERE id=:id");
+$sql = $conn->prepare("SELECT * FROM contacts WHERE id=:id LIMIT 1");
 $sql->execute([":id" => $id]);
 
 if($sql ->rowCount() == 0){
@@ -17,7 +17,16 @@ if($sql ->rowCount() == 0){
   return;
 }
 
-$conn->prepare("DELETE FROM contacts WHERE id=:id")->execute([":id", $id]);
+$contact = $sql->fetch(PDO::FETCH_ASSOC);
+if($contact["user_id"] != $_SESSION["user_id"]["id"]){
+  http_response_code(403);
+  echo "HTTP 404 NOT FOUND";
+  return;
+}
+
+$sql= $conn->prepare("DELETE FROM contacts WHERE id=:id");
+$sql->bindParam(":id", $id);
+$sql->execute();
 
 header("Location: home.php");
 

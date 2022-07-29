@@ -18,6 +18,12 @@ if ($sql->rowCount() == 0) {
 }
 
 $contact = $sql->fetch(PDO::FETCH_ASSOC);
+// Seguridad para no borrar los conctatos de otros usuarios 
+if($contact["user_id"] != $_SESSION["user_id"]["id"]){
+  http_response_code(403);
+  echo "HTTP 404 NOT FOUND";
+  return;
+}
 
 $error = null;
 
