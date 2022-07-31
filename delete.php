@@ -1,33 +1,27 @@
-<?php 
-
-require_once "db.php";
+<?php
+require "db.php";
 session_start();
-if(!isset($_SESSION["user"])){
+if (!isset($_SESSION["user"])) {
   header("Location: login.php");
   return;
 }
-$id = $_GET['id'];
-
-$sql = $conn->prepare("SELECT * FROM contacts WHERE id=:id LIMIT 1");
-$sql->execute([":id" => $id]);
-
-if($sql ->rowCount() == 0){
+$id = $_GET["id"];
+$statement = $conn->prepare("SELECT * FROM contacts WHERE id = :id LIMIT 1");
+$statement->execute([":id" => $id]);
+if ($statement->rowCount() == 0) {
   http_response_code(404);
-  echo "HTTP 404 NOT FOUND";
+  echo ("HTTP 404 NOT FOUND");
   return;
 }
-
-$contact = $sql->fetch(PDO::FETCH_ASSOC);
-if($contact["user_id"] != $_SESSION["user_id"]["id"]){
+$contact = $statement->fetch(PDO::FETCH_ASSOC);
+if ($contact["user_id"] !== $_SESSION["user"]["id"]) {
   http_response_code(403);
-  echo "HTTP 404 NOT FOUND";
+  echo ("HTTP 403 UNAUTHORIZED");
   return;
 }
 
-$sql= $conn->prepare("DELETE FROM contacts WHERE id=:id");
-$sql->bindParam(":id", $id);
-$sql->execute();
+$conn->prepare("DELETE FROM contacts WHERE id = :id")->execute([":id" => $id]);
+
+$_SESSION["flash"] = ["message" => "Contact {$contact['name']} deleted."];
 
 header("Location: home.php");
-
-?>

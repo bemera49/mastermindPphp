@@ -19,12 +19,12 @@ if ($sql->rowCount() == 0) {
 
 $contact = $sql->fetch(PDO::FETCH_ASSOC);
 // Seguridad para no borrar los conctatos de otros usuarios 
-if($contact["user_id"] != $_SESSION["user_id"]["id"]){
+if($contact["user_id"] !== $_SESSION["user"]["id"]){
   http_response_code(403);
   echo "HTTP 404 NOT FOUND";
   return;
 }
-
+ 
 $error = null;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -42,6 +42,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       ":name" => $name,
       ":phone_number" => $phoneNumber,
     ]);
+
+    $_SESSION["flash"] = ["message" => "Contact {$_POST['name']} update."];
 
     header("Location: home.php");
   }
